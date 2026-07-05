@@ -69,8 +69,6 @@ Toàn bộ pipeline nằm trong [`sql_queries/Cyclistic_Data_Preparation.sql`](.
 
 ### 4.3. Analyze — Kết quả kiểm chứng giả thuyết
 
-> Toàn bộ số liệu trong mục này được truy vấn và xác minh trực tiếp từ SQL Server (xem [`sql_queries/data_validation_checks.sql`](./sql_queries/data_validation_checks.sql)).
-
 ![Cyclistic Dashboard](./dashboards/cyclistic_dashboard.png)
 
 **Tổng quan:** 5,721,907 chuyến đi trong năm 2024, sau khi làm sạch.
