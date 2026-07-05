@@ -68,7 +68,18 @@ Toàn bộ pipeline nằm trong [`sql_queries/Cyclistic_Data_Preparation.sql`](.
 
 ### 4.3. Analyze — Kết quả kiểm chứng giả thuyết
 
+> Toàn bộ số liệu trong mục này được truy vấn và xác minh trực tiếp từ SQL Server (xem [`sql_queries/data_validation_checks.sql`](./sql_queries/data_validation_checks.sql)).
+
 ![Cyclistic Dashboard](./dashboards/cyclistic_dashboard.png)
+
+**Diễn giải dashboard:**
+- **Tổng của total_trips (6 triệu)**: tổng số chuyến đi năm 2024 sau khi làm sạch dữ liệu.
+- **Trung bình của avg_ride_length_mins (15.62 phút)**: thời lượng trung bình mỗi chuyến. Tách theo nhóm: Member 12.44 phút, Casual 21.75 phút — Casual đi dài gấp ~1.75 lần Member.
+- **Tổng của total_trips theo rideable_type** (biểu đồ cột): electric_bike và classic_bike chiếm phần lớn số chuyến, electric_scooter chỉ chiếm 2.41% — gần như không đáng kể.
+- **Tổng của total_trips theo trip_hour và member_casual** (biểu đồ đường): Member có hình chữ M với 2 đỉnh rõ rệt lúc 8h và 17h, đặc trưng cho mô hình đi làm. Casual tăng thoải hơn và chỉ có 1 đỉnh vào buổi chiều, đặc trưng cho mô hình giải trí.
+- **Tổng của total_trips theo trip_month** (biểu đồ cột ngang): thấp nhất vào các tháng đầu/cuối năm (mùa đông), cao nhất giữa năm (mùa hè/thu) — tính mùa vụ ảnh hưởng đều lên cả 2 nhóm khách.
+- **Tổng của total_trips theo trip_day_of_week** (biểu đồ cột): Member cao nhất giữa tuần (Thứ Tư), thấp nhất cuối tuần (Thứ Bảy); Casual ngược lại, thấp nhất giữa tuần (Thứ Ba), cao nhất Thứ Bảy. Trục X đánh số theo quy ước `@@DATEFIRST` của SQL Server (1 = Chủ Nhật).
+- **Tổng của total_trips theo member_casual** (donut): Member 63.64%, Casual 36.36%.
 
 **Tổng quan:** 5,721,907 chuyến đi trong năm 2024, sau khi làm sạch.
 
