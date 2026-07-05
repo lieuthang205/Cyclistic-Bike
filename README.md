@@ -4,6 +4,13 @@
 **Công cụ:** SQL Server (T-SQL) · Power BI
 **Bộ dữ liệu:** 12 tháng dữ liệu chuyến đi năm 2024 (public dataset, mô phỏng công ty xe đạp chia sẻ Cyclistic – Chicago)
 
+### 📌 Tóm tắt nhanh
+- **Vấn đề:** Marketing đang phân bổ ngân sách dàn trải cho 2.08 triệu chuyến Casual/năm, không nhắm đúng nhóm dễ chuyển đổi sang Member nhất.
+- **Phát hiện chính:** Member đi theo mô hình đi làm rõ rệt (2 đỉnh giờ 8h & 17h); Casual đi dài gấp **1.75 lần** Member (21.75 so với 12.44 phút) và tập trung cuối tuần — nhưng vẫn có lượng đáng kể Casual đi trùng giờ cao điểm ngày thường.
+- **Phát hiện phụ đáng chú ý:** scooter điện chỉ chiếm **2.41%** tổng số chuyến — thấp bất thường so với 2 loại xe còn lại.
+- **Đề xuất:** 4 hành động cụ thể có cách đo lường thành công riêng — xem mục 5.
+- **Toàn bộ số liệu đã được truy vấn và kiểm chứng trực tiếp từ SQL Server**, không phải số ước lượng từ dashboard (xem mục 4.3 và file validation).
+
 ---
 
 ## 1. Bối cảnh & Vấn đề kinh doanh (Ask)
@@ -62,7 +69,7 @@ Toàn bộ pipeline nằm trong [`sql_queries/Cyclistic_Data_Preparation.sql`](.
 
 ### 4.3. Analyze — Kết quả kiểm chứng giả thuyết
 
-> Toàn bộ số liệu trong mục này được truy vấn trực tiếp và xác minh lại từ SQL Server (xem [`sql_queries/data_validation_checks.sql`](./sql_queries/data_validation_checks.sql)), không phải số ước lượng từ dashboard.
+> Toàn bộ số liệu trong mục này được truy vấn và xác minh trực tiếp từ SQL Server (xem [`sql_queries/data_validation_checks.sql`](./sql_queries/data_validation_checks.sql)).
 
 ![Cyclistic Dashboard](./dashboards/cyclistic_dashboard.png)
 
@@ -79,7 +86,7 @@ Toàn bộ pipeline nằm trong [`sql_queries/Cyclistic_Data_Preparation.sql`](.
 
 **Về H3** (nhóm Casual đi giờ cao điểm ngày thường): dữ liệu theo giờ xác nhận vẫn có một lượng đáng kể chuyến Casual rơi vào khung 7-9h (52,164–73,847 chuyến) và 16-18h (168,232–197,705 chuyến) — thấp hơn khung chiều/tối nhưng không hề nhỏ. Đây chính là phân khúc mục tiêu cho khuyến nghị #1 bên dưới.
 
-**Giới hạn dữ liệu đã phát hiện qua bước validate (thể hiện tư duy phân tích chín chắn):**
+**Giới hạn dữ liệu:**
 - Vì bảng tổng hợp không giữ `ride_id` hoặc thông tin trạm ở cấp chi tiết, chưa thể định lượng chính xác bao nhiêu % Casual đi giờ cao điểm ngày thường là *lặp lại nhiều lần* (dấu hiệu "đi làm bằng Casual" thực sự) — đây là hướng phân tích tiếp theo ở phần Act.
 - Phát hiện **375 chuyến (~0.007% tổng số)** có thời lượng trên 24 giờ trong bảng chi tiết — bước cleaning gốc chỉ lọc ngưỡng dưới (`>= 60 giây`) mà chưa có ngưỡng trên. Tỷ lệ quá nhỏ để ảnh hưởng đến kết luận, nhưng cần bổ sung `WHERE ride_length_minutes <= 1440` vào pipeline nếu tái sử dụng cho phân tích khác.
 - `trip_day_of_week` phụ thuộc cấu hình `@@DATEFIRST` của SQL Server (ở đây = 7, tức **1 = Chủ Nhật**). Đã đối chiếu và map lại đúng nhãn ngày trước khi kết luận, tránh sai lệch thông điệp "cuối tuần".
@@ -92,7 +99,7 @@ Toàn bộ pipeline nằm trong [`sql_queries/Cyclistic_Data_Preparation.sql`](.
 |---|---|---|
 | **1. Chiến dịch "Chuyển đổi giờ cao điểm"**: gửi ưu đãi nâng cấp Member cho các tài khoản Casual có ≥3 chuyến trong khung 7-9h/16-18h ngày thường trong 30 ngày | Nhóm này hành vi giống Member nhất → chi phí thuyết phục thấp, tỷ lệ chuyển đổi kỳ vọng cao hơn quảng cáo đại trà | Theo dõi tỷ lệ chuyển đổi nhóm được target vs. nhóm đối chứng (A/B test) trong 60 ngày |
 | **2. Gói "Weekend Membership" hoặc combo tuần**: vì phần lớn Casual dùng xe cuối tuần, một gói thành viên linh hoạt (giá thấp hơn Member năm nhưng cao hơn vé lượt) có thể là bước đệm chuyển đổi | Dữ liệu cho thấy nhu cầu cuối tuần của Casual rất ổn định, không phải ngẫu nhiên | So sánh doanh thu/khách trước và sau khi ra gói mới |
-| **3. Ưu đãi tại trạm gần khu văn phòng vào giờ cao điểm** (đề xuất gốc, được giữ lại vì có cơ sở từ H1/H3) | Trùng khớp với khung giờ Member hoạt động mạnh nhất | Theo dõi số lượt quét mã ưu đãi và tỷ lệ đăng ký Member mới tại các trạm này |
+| **3. Ưu đãi tại trạm gần khu văn phòng vào giờ cao điểm** | Trùng khớp với khung giờ Member hoạt động mạnh nhất | Theo dõi số lượt quét mã ưu đãi và tỷ lệ đăng ký Member mới tại các trạm này |
 | **4. Rà soát lại đội xe scooter điện**: đề xuất bộ phận vận hành đánh giá chi phí duy trì đội scooter so với nhu cầu thực tế trước khi mở rộng chiến dịch marketing cho loại xe này | Scooter điện chỉ chiếm **2.41%** tổng số chuyến (137,612/5.72 triệu) — thấp hơn nhiều so với classic_bike và electric_bike vốn đang chia nhau ~50/50 | So sánh chi phí vận hành/chuyến giữa 3 loại xe; nếu scooter có chi phí cao hơn đáng kể trên mỗi chuyến, cân nhắc tái phân bổ ngân sách sang electric_bike |
 
 **Bước tiếp theo nếu có thêm dữ liệu:** truy vấn ở cấp độ `ride_id` (chưa tổng hợp) để tính tần suất lặp lại theo từng khách Casual ẩn danh — từ đó xây mô hình phân loại "Casual có khả năng chuyển đổi cao" thay vì chỉ dừng ở phân tích mô tả (descriptive) như hiện tại.
@@ -109,5 +116,3 @@ Toàn bộ pipeline nằm trong [`sql_queries/Cyclistic_Data_Preparation.sql`](.
 │   └── cyclistic_dashboard.png           # Ảnh xuất để nhúng trong README
 └── README.md
 ```
-
-> Việc lưu lại bộ query validation trong repo (thay vì chỉ chạy rồi bỏ) cho người xem thấy rõ quy trình kiểm chứng dữ liệu, không chỉ kết quả cuối cùng.
