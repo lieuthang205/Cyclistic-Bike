@@ -8,8 +8,7 @@
 - **Vấn đề:** Marketing đang phân bổ ngân sách dàn trải cho 2.08 triệu chuyến Casual/năm, không nhắm đúng nhóm dễ chuyển đổi sang Member nhất.
 - **Phát hiện chính:** Member đi theo mô hình đi làm rõ rệt (2 đỉnh giờ 8h & 17h); Casual đi dài gấp **1.75 lần** Member (21.75 so với 12.44 phút) và tập trung cuối tuần — nhưng vẫn có lượng đáng kể Casual đi trùng giờ cao điểm ngày thường.
 - **Phát hiện phụ đáng chú ý:** scooter điện chỉ chiếm **2.41%** tổng số chuyến — thấp bất thường so với 2 loại xe còn lại.
-- **Đề xuất:** 4 hành động cụ thể có cách đo lường thành công riêng — xem mục 5.
-- **Toàn bộ số liệu đã được truy vấn và kiểm chứng trực tiếp từ SQL Server**, không phải số ước lượng từ dashboard.
+- **Đề xuất:** 4 hành động cụ thể có cách đo lường thành công riêng. 
 
 ---
 
