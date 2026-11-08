@@ -1,0 +1,72 @@
+// Cyclistic Power BI measures
+// Table: Cyclistic_Summary_PowerBI (columns: member_casual, rideable_type, trip_month,
+//        trip_day_of_week [1 = Monday], trip_day_name, trip_hour, total_trips, avg_ride_length_mins)
+// Model tip: set "Sort by column" trip_day_name -> trip_day_of_week so days show Mon..Sun.
+
+Total Trips =
+SUM ( Cyclistic_Summary_PowerBI[total_trips] )
+
+Member Trips =
+CALCULATE ( [Total Trips], Cyclistic_Summary_PowerBI[member_casual] = "member" )
+
+Casual Trips =
+CALCULATE ( [Total Trips], Cyclistic_Summary_PowerBI[member_casual] = "casual" )
+
+Member Share % =
+DIVIDE ( [Member Trips], [Total Trips] )
+
+Casual Share % =
+DIVIDE ( [Casual Trips], [Total Trips] )
+
+// Trip-weighted average. Do NOT use AVERAGE() on avg_ride_length_mins: it averages the
+// pre-aggregated rows and gives 15.62 instead of the correct 15.73.
+Avg Ride Length (min) =
+DIVIDE (
+    SUMX (
+        Cyclistic_Summary_PowerBI,
+        Cyclistic_Summary_PowerBI[avg_ride_length_mins] * Cyclistic_Summary_PowerBI[total_trips]
+    ),
+    [Total Trips]
+)
+
+Member Avg Ride (min) =
+CALCULATE ( [Avg Ride Length (min)], Cyclistic_Summary_PowerBI[member_casual] = "member" )
+
+Casual Avg Ride (min) =
+CALCULATE ( [Avg Ride Length (min)], Cyclistic_Summary_PowerBI[member_casual] = "casual" )
+
+Casual vs Member Ride Length (x) =
+DIVIDE ( [Casual Avg Ride (min)], [Member Avg Ride (min)] )
+
+// Weekday (Mon-Fri) commute windows: 7-9h and 16-18h
+Casual Weekday Rush Trips =
+CALCULATE (
+    [Casual Trips],
+    Cyclistic_Summary_PowerBI[trip_day_of_week] IN { 1, 2, 3, 4, 5 },
+    Cyclistic_Summary_PowerBI[trip_hour] IN { 7, 8, 9, 16, 17, 18 }
+)
+
+Casual Weekday Rush % =
+DIVIDE ( [Casual Weekday Rush Trips], [Casual Trips] )
+
+Casual Weekend Share % =
+DIVIDE (
+    CALCULATE ( [Casual Trips], Cyclistic_Summary_PowerBI[trip_day_of_week] IN { 6, 7 } ),
+    [Casual Trips]
+)
+
+Member Weekend Share % =
+DIVIDE (
+    CALCULATE ( [Member Trips], Cyclistic_Summary_PowerBI[trip_day_of_week] IN { 6, 7 } ),
+    [Member Trips]
+)
+
+E-Scooter Share % =
+DIVIDE (
+    CALCULATE ( [Total Trips], Cyclistic_Summary_PowerBI[rideable_type] = "electric_scooter" ),
+    [Total Trips]
+)
+
+// Expected values on the full 2024 data (from data_validation_checks.sql):
+// Total Trips 5,721,532 | Casual Share 36.36% | Avg Ride 15.73 | Member 12.41 | Casual 21.55
+// Casual vs Member 1.74x | Casual Weekday Rush Trips 521,299 (25.06%) | E-Scooter 2.41%

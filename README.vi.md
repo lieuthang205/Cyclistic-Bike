@@ -1,5 +1,3 @@
-<!-- TODO: số liệu bên dưới đã được đối chiếu với SQL Server bằng data_validation_checks.sql (trừ nhận xét theo tháng). Cần làm mới dashboards/cyclistic_dashboard.png (ảnh hiện tại vẫn là bản cũ: KPI 6 triệu, TB 15.62, trục ngày dạng số, donut trip_hour vô nghĩa), rồi xóa comment này. -->
-
 # 🚲 Cyclistic Bike-Share: Phân tích hành vi khách hàng để tăng tỷ lệ chuyển đổi sang Member
 
 [🇬🇧 English](./README.md) · 🇻🇳 Tiếng Việt
@@ -75,7 +73,9 @@ Toàn bộ pipeline nằm trong [`sql_queries/Cyclistic_Data_Preparation.sql`](.
 
 > Toàn bộ số liệu trong mục này được truy vấn và xác minh trực tiếp từ SQL Server (xem [`sql_queries/data_validation_checks.sql`](./sql_queries/data_validation_checks.sql)).
 
-![Cyclistic Dashboard](./dashboards/cyclistic_dashboard.png)
+![Tổng hợp kết quả Cyclistic](./dashboards/cyclistic_results_summary.png)
+
+*Ảnh tổng hợp vẽ từ kết quả SQL đã kiểm chứng. Báo cáo Power BI tương tác và cách dựng lại nằm trong [`dashboards/`](./dashboards/README.md).*
 
 **Diễn giải dashboard:**
 - **Tổng của total_trips (6 triệu)**: tổng số chuyến đi năm 2024 sau khi làm sạch dữ liệu.

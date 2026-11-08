@@ -1,7 +1,3 @@
-<!-- TODO before publishing: all figures below were validated against SQL Server using sql_queries/data_validation_checks.sql,
-     EXCEPT the monthly seasonality remark. Refresh dashboards/cyclistic_dashboard.png (it still shows pre-fix numbers:
-     6M KPI, 15.62 avg length, numeric day axis, meaningless trip_hour donut). Then delete this comment. -->
-
 # 🚲 Cyclistic Bike-Share: Which Casual Riders Should Marketing Target?
 
 🇬🇧 English · [🇻🇳 Tiếng Việt](./README.vi.md)
@@ -21,9 +17,9 @@
 
 **Outcome:** 4 targeted recommendations, each with a success metric (see [Recommendations](#recommendations)).
 
-![Cyclistic dashboard](./dashboards/cyclistic_dashboard.png)
+![Cyclistic results summary](./dashboards/cyclistic_results_summary.png)
 
-[Full PDF dashboard](./dashboards/cyclistic.pdf)
+Static summary drawn from the validated SQL results. The interactive Power BI report and how to rebuild it are in [`dashboards/`](./dashboards/README.md).
 
 ## Approach
 
@@ -82,8 +78,11 @@ Seasonality (peak in summer to early autumn, trough in winter) affects both grou
 │   ├── Cyclistic_Data_Preparation.sql   # combine, clean, enrich, aggregate
 │   └── data_validation_checks.sql       # reproduces every number in this README
 ├── dashboards/
-│   ├── cyclistic.pdf                    # Power BI dashboard (PDF export)
-│   └── cyclistic_dashboard.png          # image used in this README
+│   ├── cyclistic_results_summary.png    # summary charts from validated SQL results (used above)
+│   ├── cyclistic_dashboard.png / .pdf   # Power BI export (older version, to be refreshed)
+│   ├── cyclistic_theme.json             # Power BI theme
+│   ├── powerbi_measures.dax             # DAX measures + expected values
+│   └── README.md                        # how to rebuild the report
 ├── README.md                            # English
 └── README.vi.md                         # Tiếng Việt
 ```
